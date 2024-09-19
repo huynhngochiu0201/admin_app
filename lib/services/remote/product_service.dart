@@ -137,16 +137,16 @@ class ProductService {
     }
   }
 
-  Future<void> deleteProductById(String id) async {
-    try {
-      await _firestore
-          .collection(AppDefineCollection.APP_PRODUCT)
-          .doc(id)
-          .delete();
-    } catch (e) {
-      throw Exception('Error deleting product: $e');
-    }
-  }
+  // Future<void> deleteProductById(String id) async {
+  //   try {
+  //     await _firestore
+  //         .collection(AppDefineCollection.APP_PRODUCT)
+  //         .doc(id)
+  //         .delete();
+  //   } catch (e) {
+  //     throw Exception('Error deleting product: $e');
+  //   }
+  // }
 
   Future<void> deleteProductByIdCate(String idCate) async {
     try {
@@ -162,6 +162,25 @@ class ProductService {
       }
     } catch (e) {
       throw Exception('Error deleting products by category: $e');
+    }
+  }
+
+  // Phương thức xóa sản phẩm theo ID
+  Future<void> deleteProductById(String productId) async {
+    try {
+      // Xóa sản phẩm từ Firestore
+      await _firestore
+          .collection(AppDefineCollection.APP_PRODUCT)
+          .doc(productId)
+          .delete();
+
+      // Xóa ảnh sản phẩm từ Firebase Storage
+      String imageStoragePath =
+          '/${AppDefineCollection.APP_PRODUCT}/$productId';
+      final Reference ref = _storage.ref().child(imageStoragePath);
+      await ref.delete();
+    } catch (e) {
+      throw Exception('Error deleting product: $e');
     }
   }
 }

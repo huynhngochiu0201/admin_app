@@ -109,12 +109,15 @@ class _AddProductState extends State<AddProduct> {
         const SnackBar(content: Text('Product added successfully')),
       );
 
-      // Optionally, clear the form
+      // Clear the form and reset state
       _formKey.currentState!.reset();
       setState(() {
         _selectedImage = null;
         _selectedCategory = null;
       });
+
+      // Navigate back to the previous page
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to add product: $e')),
