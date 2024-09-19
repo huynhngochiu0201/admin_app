@@ -7,22 +7,27 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class ProductService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseStorage storage = FirebaseStorage.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   Future<void> updateProduct(UpdateProductModel product) async {
     try {
-      String idImage = product.productId!;
+      // Construct the image storage path using product ID and category ID
+      String imageId = product.productId!;
       String imageStoragePath =
-          '/${AppDefineCollection.APP_PRODUCT}/${product.cateId}/$idImage';
+          '/${AppDefineCollection.APP_PRODUCT}/${product.cateId}/$imageId';
 
+      // Convert product data to JSON
       final Map<String, dynamic> productData = product.toJson();
+
+      // If an image is provided, upload it to Firebase Storage and get the download URL
       if (product.image != null) {
-        final Reference ref = storage.ref().child(imageStoragePath);
-        final UploadTask uploadTask = ref.putBlob(product.image!);
-        final TaskSnapshot downloadUrl = await uploadTask;
-        final String imageUrl = await downloadUrl.ref.getDownloadURL();
+        final Reference ref = _storage.ref().child(imageStoragePath);
+        final UploadTask uploadTask = ref.putData(product.image!);
+        final TaskSnapshot taskSnapshot = await uploadTask;
+        final String imageUrl = await taskSnapshot.ref.getDownloadURL();
         productData['image'] = imageUrl;
       }
 
+      // Update the product document in Firestore
       await _firestore
           .collection(AppDefineCollection.APP_PRODUCT)
           .doc(product.productId)
@@ -41,7 +46,7 @@ class ProductService {
 
       String imageUrl = '';
       if (product.image != null) {
-        final Reference ref = storage.ref().child(imageStoragePath);
+        final Reference ref = _storage.ref().child(imageStoragePath);
         final UploadTask uploadTask = ref.putData(product.image!);
         final TaskSnapshot downloadUrl = await uploadTask;
         imageUrl = await downloadUrl.ref.getDownloadURL();

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UpdateProductModel {
@@ -8,7 +10,7 @@ class UpdateProductModel {
   final String? description;
 
   final int quantity;
-  final String? image;
+  final Uint8List? image;
 
   UpdateProductModel({
     this.productId,
