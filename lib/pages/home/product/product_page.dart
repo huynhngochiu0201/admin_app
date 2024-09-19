@@ -152,19 +152,37 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ),
                                             const SizedBox(height: 5.0),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(product.name),
-                                                  Text(product.categoryId),
-                                                  Text(
-                                                      'Quantity: ${product.quantity}'),
-                                                ],
+                                            Align(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      maxLines: 1,
+                                                      product.name,
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    Text(
+                                                      maxLines: 1,
+                                                      product.categoryId,
+                                                      style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                    Text(
+                                                        'Quantity: ${product.quantity}'),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                             Row(
@@ -173,7 +191,7 @@ class _ProductPageState extends State<ProductPage> {
                                               children: [
                                                 Container(
                                                   height: 40.0,
-                                                  width: 100.0,
+                                                  width: 80.0,
                                                   decoration: BoxDecoration(
                                                     color: AppColor.blue,
                                                     borderRadius:
