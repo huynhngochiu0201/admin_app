@@ -3,6 +3,7 @@ import 'package:admin_app/models/service_model.dart';
 import 'package:admin_app/components/button/cr_elevated_button.dart';
 import 'package:admin_app/constants/app_color.dart';
 import 'package:admin_app/pages/service/widget/add_service.dart';
+import 'package:admin_app/pages/service/widget/edit_service.dart';
 import 'package:admin_app/services/remote/service.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/gestures.dart';
@@ -16,7 +17,7 @@ class ServicePage extends StatefulWidget {
 }
 
 class _ServicePageState extends State<ServicePage> {
-  List<ServiceModel> _services = []; // Change to ServiceModel
+  List<ServiceModel> _services = [];
   bool _isLoading = true;
   String? _errorMessage;
   bool isExpanded = false;
@@ -24,15 +25,14 @@ class _ServicePageState extends State<ServicePage> {
   @override
   void initState() {
     super.initState();
-    _fetchServices(); // Update method name
+    _fetchServices();
   }
 
   Future<void> _fetchServices() async {
-    // Update method name
     try {
       ServiceService serviceService = ServiceService();
-      List<ServiceModel> services = await serviceService
-          .fetchAllServicesByCreateAt(); // Use ServiceService
+      List<ServiceModel> services =
+          await serviceService.fetchAllServicesByCreateAt();
       setState(() {
         _services = services;
         _isLoading = false;
@@ -46,21 +46,18 @@ class _ServicePageState extends State<ServicePage> {
   }
 
   Future<void> _refreshServices() async {
-    // Update method name
-    await _fetchServices(); // Call the fetchServices method to refresh the list
+    await _fetchServices();
   }
 
-  // Future<void> _deleteService(ServiceModel service) async {
-  //   // Update method to delete service
-  //   try {
-  //     ServiceService serviceService = ServiceService();
-  //     await serviceService
-  //         .deleteServiceById(service.id); // Assuming this method exists
-  //     _fetchServices(); // Refresh the list after deletion
-  //   } catch (e) {
-  //     print('Error deleting service: $e');
-  //   }
-  // }
+  Future<void> _deleteService(ServiceModel service) async {
+    try {
+      ServiceService serviceService = ServiceService();
+      await serviceService.deleteServiceById(service.id);
+      _fetchServices();
+    } catch (e) {
+      print('Error deleting service: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +66,7 @@ class _ServicePageState extends State<ServicePage> {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Service'),
       body: RefreshIndicator(
-        onRefresh: _refreshServices, // Function to call when pulling to refresh
+        onRefresh: _refreshServices,
         child: Padding(
           padding:
               const EdgeInsets.symmetric(horizontal: 20.0).copyWith(top: 20.0),
@@ -82,7 +79,6 @@ class _ServicePageState extends State<ServicePage> {
                     MaterialPageRoute(builder: (context) => const AddService()),
                   )
                       .then((value) {
-                    // After adding a new service, fetch the services again
                     _fetchServices();
                   });
                 },
@@ -135,13 +131,11 @@ class _ServicePageState extends State<ServicePage> {
                                                 borderRadius:
                                                     BorderRadius.circular(10),
                                                 child: Image.network(
-                                                  service.image ??
-                                                      '', // Update to use service image
+                                                  service.image ?? '',
                                                   fit: BoxFit.cover,
                                                   errorBuilder: (context, error,
                                                           stackTrace) =>
-                                                      const Icon(Icons
-                                                          .error), // Handle image errors
+                                                      const Icon(Icons.error),
                                                 ),
                                               ),
                                             ),
@@ -155,8 +149,16 @@ class _ServicePageState extends State<ServicePage> {
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    service.name ??
-                                                        'Unnamed', // Update to use service name
+                                                    service.name ?? 'Unnamed',
+                                                    style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  Text(
+                                                    '${service.price} \$',
                                                     style: const TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
@@ -165,6 +167,53 @@ class _ServicePageState extends State<ServicePage> {
                                                         TextOverflow.ellipsis,
                                                   ),
                                                   const SizedBox(height: 20.0),
+                                                  IconButton(
+                                                    onPressed: () async {
+                                                      final shouldDelete =
+                                                          await showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return _deletel_showDialog(
+                                                              context);
+                                                        },
+                                                      );
+
+                                                      if (shouldDelete) {
+                                                        await _deleteService(
+                                                            service);
+                                                      }
+                                                    },
+                                                    icon: const Icon(
+                                                        Icons
+                                                            .delete_outline_rounded,
+                                                        color: AppColor.red),
+                                                  ),
+                                                  IconButton(
+                                                    onPressed: () async {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                'Edit Service'),
+                                                            content:
+                                                                EditServiceDialog(
+                                                              service: service,
+                                                              onUpdate: () {
+                                                                _fetchServices();
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    icon: const Icon(Icons.edit,
+                                                        color: Colors.blue),
+                                                  ),
                                                   RichText(
                                                     text: TextSpan(
                                                       text: isExpanded ||
@@ -230,51 +279,12 @@ class _ServicePageState extends State<ServicePage> {
                                             ),
                                           ),
                                           const SizedBox(height: 20.0),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                height: 40.0,
-                                                width: 80.0,
-                                                decoration: BoxDecoration(
-                                                  color: AppColor.blue,
-                                                  borderRadius:
-                                                      const BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(10),
-                                                    bottomRight:
-                                                        Radius.circular(10),
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.8),
-                                                      spreadRadius: 0,
-                                                      blurRadius: 3,
-                                                      offset:
-                                                          const Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                    '${service.price} \$', // Update to use service price
-                                                    style: const TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
                                         ],
                                       ),
                                     ),
                                   );
                                 },
-                                itemCount: _services.length, // Update itemCount
+                                itemCount: _services.length,
                                 crossAxisCount: 1,
                               ),
               ),
@@ -282,6 +292,23 @@ class _ServicePageState extends State<ServicePage> {
           ),
         ),
       ),
+    );
+  }
+
+  AlertDialog _deletel_showDialog(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Confirm Delete'),
+      content: const Text('Are you sure you want to delete this category?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: const Text('Delete'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: const Text('Cancel'),
+        ),
+      ],
     );
   }
 }

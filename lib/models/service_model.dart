@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ServiceModel {
-  final String id;
+  String id;
   final String? name;
   final String? image;
   final double? price;

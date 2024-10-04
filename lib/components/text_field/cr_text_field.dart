@@ -14,6 +14,7 @@ class CrTextField extends StatelessWidget {
     this.validator,
     this.readOnly = false,
     this.labelText,
+    this.maxLines,
   });
 
   final TextEditingController? controller;
@@ -26,6 +27,7 @@ class CrTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final FormFieldValidator<String>? validator;
   final bool readOnly;
+  final int? maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +53,7 @@ class CrTextField extends StatelessWidget {
         ),
         TextFormField(
           controller: controller,
+          maxLines: maxLines,
           focusNode: focusNode,
           keyboardType: keyboardType,
           onFieldSubmitted: onFieldSubmitted,
