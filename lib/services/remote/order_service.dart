@@ -1,33 +1,25 @@
-import 'package:admin_app/models/payment_model.dart';
-import 'package:admin_app/services/local/define_collection.dart';
+import 'package:admin_app/models/order_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 
 class OrderService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<PaymentModel>> getPayment() async {
-    try {
-      final paymentsCollection = await _firestore
-          .collection(AppDefineCollection.APP_PAYMENT)
-          .orderBy('createdAt', descending: true)
-          .get();
-      return paymentsCollection.docs
-          .map((doc) => PaymentModel.fromJson(doc))
-          .toList();
-    } catch (e) {
-      throw Exception('Error fetching payments: $e');
-    }
+  Stream<List<OrderModel>> getAllOrders() {
+    return _firestore.collection('orders').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) => OrderModel.fromJson(doc)).toList();
+    });
   }
 
-  Future<void> deletePaymentById(String paymentId) async {
-    try {
-      await _firestore
-          .collection(AppDefineCollection.APP_PAYMENT)
-          .doc(paymentId)
-          .delete();
-    } catch (e) {
-      rethrow;
-    }
+  // Delete an order by ID
+  Future<void> deleteOrder(String orderId) async {
+    await _firestore.collection('orders').doc(orderId).delete();
+  }
+
+  // Update order status
+  Future<void> updateOrderStatus(String orderId, String status) async {
+    await _firestore
+        .collection('orders')
+        .doc(orderId)
+        .update({'status': status});
   }
 }

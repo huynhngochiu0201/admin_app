@@ -43,7 +43,7 @@ class _BottomNavBarCurvedFb1State extends State<BottomNavBarCurvedFb1> {
                   selectedColor: AppColor.primaryColor,
                 ),
                 NavBarIcon(
-                  text: "Oder",
+                  text: "Order",
                   svgIcon: 'assets/icons/package-add-icon.svg',
                   selected: widget.selected == 1,
                   onPressed: () => widget.onPressed(1),

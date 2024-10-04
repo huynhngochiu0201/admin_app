@@ -110,7 +110,6 @@ class _ProductPageState extends State<ProductPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(5.0),
                                       child: Container(
-                                        height: 221,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
@@ -214,7 +213,7 @@ class _ProductPageState extends State<ProductPage> {
                                                   ),
                                                   child: Center(
                                                     child: Text(
-                                                      '${product.price} VND',
+                                                      '${product.price} \$',
                                                       style: const TextStyle(
                                                           color: Colors.white,
                                                           fontWeight:

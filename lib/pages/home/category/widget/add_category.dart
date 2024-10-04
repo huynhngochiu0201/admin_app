@@ -165,21 +165,43 @@ class _AddCategoryState extends State<AddCategory> {
                     width: 2,
                   ),
                 ),
-                child: _selectedImage != null
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.memory(
-                          _selectedImage!,
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : Center(
-                        child: SvgPicture.asset(
-                          'assets/icons/add-image-photo-icon.svg',
-                          width: 50,
-                          height: 50,
+                child: Stack(
+                  children: [
+                    _selectedImage != null
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.memory(
+                              _selectedImage!,
+                              fit: BoxFit.cover,
+                              width: 150,
+                              height: 150,
+                            ),
+                          )
+                        : Center(
+                            child: SvgPicture.asset(
+                              'assets/icons/add-image-photo-icon.svg',
+                              width: 50,
+                              height: 50,
+                            ),
+                          ),
+                    if (_selectedImage != null)
+                      Positioned(
+                        top: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _selectedImage = null;
+                            });
+                          },
+                          child: const Icon(
+                            Icons.cancel,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 20.0),
