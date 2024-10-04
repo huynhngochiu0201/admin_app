@@ -1,5 +1,4 @@
 import 'package:admin_app/pages/service/service_page.dart';
-import 'package:admin_app/services/remote/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +18,8 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-  final AuthService _authService =
-      AuthService(); // Tạo thể hiện của AuthService
+  // final AuthService _authService =
+  //     AuthService(); // Tạo thể hiện của AuthService
   String? userName; // Biến để lưu trữ tên người dùng
 
   @override

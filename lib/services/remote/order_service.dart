@@ -53,7 +53,7 @@ class OrderService {
   }
 
   // Update order status
-  Future<void> updateOrderStatus(String orderId, String status) async {
+  Future<void> updateOrderStatus1(String orderId, String status) async {
     // Validate the status before updating
     if (status == OrderStatus.received ||
         status == OrderStatus.inTransit ||
@@ -66,4 +66,15 @@ class OrderService {
       throw Exception("Invalid status");
     }
   }
+Future<void> updateOrderStatus(String orderId, String newStatus) async {
+    try {
+      await _firestore.collection('orders').doc(orderId).update({
+        'status': newStatus,  // Update the status field in Firestore
+      });
+    } catch (e) {
+      print('Error updating order status: $e');
+      throw Exception('Failed to update order status');
+    }
+  }
+  
 }
