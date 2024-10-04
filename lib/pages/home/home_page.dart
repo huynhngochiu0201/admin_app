@@ -89,6 +89,24 @@ class HomePage extends StatelessWidget {
                   },
                 ),
                 FutureBuilder<int>(
+                  future: homeService.getAllServiveCount(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return const Text('Error loading categories count');
+                    } else {
+                      int allCategory = snapshot.data ?? 0;
+                      return _buildCard(
+                        icon: Icons.list,
+                        title: 'All Service',
+                        value: allCategory.toString(),
+                        color: Colors.white,
+                      );
+                    }
+                  },
+                ),
+                FutureBuilder<int>(
                   future: homeService.getAllCategoriesCount(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {

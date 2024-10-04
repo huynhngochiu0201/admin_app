@@ -151,69 +151,82 @@ class _ServicePageState extends State<ServicePage> {
                                                   Text(
                                                     service.name ?? 'Unnamed',
                                                     style: const TextStyle(
-                                                        fontSize: 16,
+                                                        fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   ),
+                                                  const SizedBox(height: 5.0),
                                                   Text(
                                                     '${service.price} \$',
                                                     style: const TextStyle(
-                                                        fontSize: 16,
+                                                        fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   ),
-                                                  const SizedBox(height: 20.0),
-                                                  IconButton(
-                                                    onPressed: () async {
-                                                      final shouldDelete =
-                                                          await showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return _deletel_showDialog(
-                                                              context);
-                                                        },
-                                                      );
-
-                                                      if (shouldDelete) {
-                                                        await _deleteService(
-                                                            service);
-                                                      }
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons
-                                                            .delete_outline_rounded,
-                                                        color: AppColor.red),
-                                                  ),
-                                                  IconButton(
-                                                    onPressed: () async {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            title: const Text(
-                                                                'Edit Service'),
-                                                            content:
-                                                                EditServiceDialog(
-                                                              service: service,
-                                                              onUpdate: () {
-                                                                _fetchServices();
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                            ),
+                                                  const SizedBox(height: 10.0),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      IconButton(
+                                                        onPressed: () async {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: const Text(
+                                                                    'Edit Service'),
+                                                                content:
+                                                                    EditServiceDialog(
+                                                                  service:
+                                                                      service,
+                                                                  onUpdate: () {
+                                                                    _fetchServices();
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                ),
+                                                              );
+                                                            },
                                                           );
                                                         },
-                                                      );
-                                                    },
-                                                    icon: const Icon(Icons.edit,
-                                                        color: Colors.blue),
+                                                        icon: const Icon(
+                                                            Icons.edit,
+                                                            color: Colors.blue),
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () async {
+                                                          final shouldDelete =
+                                                              await showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return _deletel_showDialog(
+                                                                  context);
+                                                            },
+                                                          );
+
+                                                          if (shouldDelete) {
+                                                            await _deleteService(
+                                                                service);
+                                                          }
+                                                        },
+                                                        icon: const Icon(
+                                                            Icons
+                                                                .delete_outline_rounded,
+                                                            color:
+                                                                AppColor.red),
+                                                      ),
+                                                    ],
                                                   ),
+                                                  const SizedBox(height: 20.0),
                                                   RichText(
                                                     text: TextSpan(
                                                       text: isExpanded ||

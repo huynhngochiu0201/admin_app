@@ -1,4 +1,5 @@
 import 'package:admin_app/models/order_model.dart';
+import 'package:admin_app/services/local/define_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeService {
@@ -6,19 +7,28 @@ class HomeService {
 
   // Fetch all orders
   Future<List<OrderModel>> getAllOrders() async {
-    QuerySnapshot snapshot = await _firestore.collection('orders').get();
+    QuerySnapshot snapshot =
+        await _firestore.collection(AppDefineCollection.APP_ORDER).get();
     return snapshot.docs.map((doc) => OrderModel.fromJson(doc)).toList();
   }
 
   // Fetch all products
   Future<int> getAllProductsCount() async {
-    QuerySnapshot snapshot = await _firestore.collection('products').get();
+    QuerySnapshot snapshot =
+        await _firestore.collection(AppDefineCollection.APP_PRODUCT).get();
     return snapshot.size;
   }
 
   // Fetch all categories
   Future<int> getAllCategoriesCount() async {
-    QuerySnapshot snapshot = await _firestore.collection('categories').get();
+    QuerySnapshot snapshot =
+        await _firestore.collection(AppDefineCollection.APP_CATEGORY).get();
+    return snapshot.size;
+  }
+
+  Future<int> getAllServiveCount() async {
+    QuerySnapshot snapshot =
+        await _firestore.collection(AppDefineCollection.APP_SERVICE).get();
     return snapshot.size;
   }
 

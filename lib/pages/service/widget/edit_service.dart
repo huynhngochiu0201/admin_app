@@ -39,7 +39,6 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
       );
       widget.onUpdate(); // Call the update callback
     } catch (e) {
-      // Handle the error accordingly
       print('Error updating service: $e');
     }
   }
@@ -68,7 +67,7 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
             controller: _descriptionController,
             hintText: 'Description',
             labelText: 'Description',
-            maxLines: 4,
+            maxLines: 6,
           ),
           const SizedBox(height: 20),
           CrElevatedButton(
