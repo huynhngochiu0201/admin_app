@@ -1,5 +1,7 @@
 import 'package:admin_app/constants/app_color.dart';
 import 'package:admin_app/models/order_model.dart';
+import 'package:admin_app/resources/double_extension.dart';
+
 import 'package:admin_app/services/remote/order_service.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,7 @@ class OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           Expanded(
@@ -85,7 +88,7 @@ class OrderPageState extends State<OrderPage> {
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        'Total: \$${order.totalPrice}',
+                                        'Total: \$${order.totalPrice!.toVND()}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16.0,
@@ -237,7 +240,7 @@ class OrderPageState extends State<OrderPage> {
                                                 ),
                                                 const SizedBox(height: 8.0),
                                                 Text(
-                                                  '\$${cartItem.productPrice}',
+                                                  '\$${cartItem.productPrice.toVND()}',
                                                   style: const TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 16.0,

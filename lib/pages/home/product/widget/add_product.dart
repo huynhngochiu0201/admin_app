@@ -143,6 +143,7 @@ class _AddProductState extends State<AddProduct> {
     // Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const CustomAppBar(title: 'Add Product'),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),

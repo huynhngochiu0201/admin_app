@@ -10,15 +10,12 @@ class ProductService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   Future<void> updateProduct(UpdateProductModel product) async {
     try {
-      // Construct the image storage path using product ID and category ID
       String imageId = product.productId!;
       String imageStoragePath =
           '/${AppDefineCollection.APP_PRODUCT}/${product.cateId}/$imageId';
 
-      // Convert product data to JSON
       final Map<String, dynamic> productData = product.toJson();
 
-      // If an image is provided, upload it to Firebase Storage and get the download URL
       if (product.image != null) {
         final Reference ref = _storage.ref().child(imageStoragePath);
         final UploadTask uploadTask = ref.putData(product.image!);
@@ -27,7 +24,6 @@ class ProductService {
         productData['image'] = imageUrl;
       }
 
-      // Update the product document in Firestore
       await _firestore
           .collection(AppDefineCollection.APP_PRODUCT)
           .doc(product.productId)

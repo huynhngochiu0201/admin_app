@@ -118,7 +118,7 @@ class NavBarIcon extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-                fontSize: 15, color: selected ? Colors.black : Colors.black26),
+                fontSize: 13, color: selected ? Colors.black : Colors.black26),
           )
         ],
       ),

@@ -3,6 +3,7 @@ import 'package:admin_app/components/button/cr_elevated_button.dart';
 import 'package:admin_app/constants/app_color.dart';
 import 'package:admin_app/pages/home/product/widget/add_product.dart';
 import 'package:admin_app/pages/home/product/widget/item_product.dart';
+import 'package:admin_app/resources/double_extension.dart';
 import 'package:admin_app/services/remote/product_service.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,7 @@ class _ProductPageState extends State<ProductPage> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshProducts, // Function to call when pulling to refresh
         child: Padding(
@@ -190,7 +192,7 @@ class _ProductPageState extends State<ProductPage> {
                                               children: [
                                                 Container(
                                                   height: 40.0,
-                                                  width: 80.0,
+                                                  width: 110.0,
                                                   decoration: BoxDecoration(
                                                     color: AppColor.blue,
                                                     borderRadius:
@@ -211,13 +213,17 @@ class _ProductPageState extends State<ProductPage> {
                                                       ),
                                                     ],
                                                   ),
-                                                  child: Center(
+                                                  child: Align(
+                                                    alignment: Alignment.center,
                                                     child: Text(
-                                                      '${product.price} \$',
+                                                      maxLines: 1,
+                                                      product.price.toVND(),
                                                       style: const TextStyle(
                                                           color: Colors.white,
                                                           fontWeight:
                                                               FontWeight.bold),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                   ),
                                                 ),

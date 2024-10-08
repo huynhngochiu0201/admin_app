@@ -4,6 +4,7 @@ import 'package:admin_app/components/button/cr_elevated_button.dart';
 import 'package:admin_app/constants/app_color.dart';
 import 'package:admin_app/pages/service/widget/add_service.dart';
 import 'package:admin_app/pages/service/widget/edit_service.dart';
+import 'package:admin_app/resources/double_extension.dart';
 import 'package:admin_app/services/remote/service.dart';
 import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/gestures.dart';
@@ -159,7 +160,7 @@ class _ServicePageState extends State<ServicePage> {
                                                   ),
                                                   const SizedBox(height: 5.0),
                                                   Text(
-                                                    '${service.price} \$',
+                                                    service.price!.toVND(),
                                                     style: const TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:

@@ -1,4 +1,6 @@
+import 'package:admin_app/pages/auth/login_page.dart';
 import 'package:admin_app/pages/service/service_page.dart';
+import 'package:admin_app/services/remote/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +20,8 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-  // final AuthService _authService =
-  //     AuthService(); // Tạo thể hiện của AuthService
+  final AuthService _authService =
+      AuthService(); // Tạo thể hiện của AuthService
   String? userName; // Biến để lưu trữ tên người dùng
 
   @override
@@ -79,24 +81,6 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
           ),
           const SizedBox(height: 18.0),
-          // GestureDetector(
-          //   onTap: () {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => const ProfilePage(),
-          //         ));
-          //   },
-          //   behavior: HitTestBehavior.translucent,
-          //   child: const Row(
-          //     children: [
-          //       Icon(Icons.person, size: iconSize, color: iconColor),
-          //       SizedBox(width: spacer),
-          //       Text('My Profile', style: textStyle),
-          //     ],
-          //   ),
-          // ),
-          // const SizedBox(height: 18.0),
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -127,20 +111,20 @@ class _DrawerPageState extends State<DrawerPage> {
             ],
           ),
           const Spacer(flex: 2),
-          const InkWell(
-            // onTap: () async {
-            //   await _authService.signOut();
-            //   if (mounted) {
-            //     Navigator.of(context).pushReplacement(
-            //       MaterialPageRoute(
-            //           builder: (context) =>
-            //               const LoginPage()), // Điều hướng đến trang đăng nhập
-            //     );
-            //   }
-            // },
+          InkWell(
+            onTap: () async {
+              await _authService.signOut();
+              if (mounted) {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const LoginPage()), // Điều hướng đến trang đăng nhập
+                );
+              }
+            },
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
-            child: Row(
+            child: const Row(
               children: [
                 Icon(Icons.logout, size: iconSize, color: iconColor),
                 SizedBox(width: spacer),

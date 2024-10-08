@@ -5,7 +5,7 @@ class ServiceModel {
   final String? name;
   final String? image;
   final double? price;
-  final String? description; // Include description
+  final String? description;
   final Timestamp? createAt;
 
   ServiceModel({
@@ -14,7 +14,7 @@ class ServiceModel {
     this.image,
     this.createAt,
     this.price,
-    this.description, // Initialize description
+    this.description,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
@@ -23,7 +23,7 @@ class ServiceModel {
       name: json['name'] as String?,
       image: json['image'] as String?,
       price: (json['price'] as num?)?.toDouble(),
-      description: json['description'] as String?, // Get description
+      description: json['description'] as String?,
       createAt: json['createAt'] as Timestamp?,
     );
   }
@@ -34,7 +34,7 @@ class ServiceModel {
       'name': name,
       'image': image,
       'price': price,
-      'description': description, // Include description
+      'description': description,
       'createAt': createAt,
     };
   }
