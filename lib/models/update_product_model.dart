@@ -9,7 +9,7 @@ class UpdateProductModel {
   final double? price;
   final String? description;
 
-  final int quantity;
+  final int? quantity;
   final Uint8List? image;
 
   UpdateProductModel({
@@ -18,7 +18,7 @@ class UpdateProductModel {
     this.productName,
     this.price,
     this.description,
-    required this.quantity,
+    this.quantity,
     this.image,
   });
 

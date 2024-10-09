@@ -1,32 +1,38 @@
-// import 'package:shared_preferences/shared_preferences.dart';
-
-// class SharedPrefsOnboarding {
-//   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-//   final String keySeenOnboard = 'seen_onboard';
-
-//   Future<bool?> getSeenOnboard() async {
-//     SharedPreferences prefs = await _prefs;
-//     return prefs.getBool(keySeenOnboard);
-//   }
-
-//   Future<void> saveSeenOnboard(bool seen) async {
-//     SharedPreferences prefs = await _prefs;
-//     prefs.setBool(keySeenOnboard, seen);
-//   }
-// }
+import 'dart:convert';
+import 'package:admin_app/models/user_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPrefsOnboarding {
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final String keySeenOnboard = 'seen_onboard';
+class SharedPrefs {
+  static const String userKey = 'user';
 
-  Future<bool?> getSeenOnboard() async {
-    SharedPreferences prefs = await _prefs;
-    return prefs.getBool(keySeenOnboard);
+  static late SharedPreferences _prefs;
+
+  static Future<void> initialise() async {
+    _prefs = await SharedPreferences.getInstance();
   }
 
-  Future<void> saveSeenOnboard(bool seen) async {
-    SharedPreferences prefs = await _prefs;
-    prefs.setBool(keySeenOnboard, seen);
+  static bool get isAccessed => _prefs.getBool('checkAccess') ?? false;
+
+  static set isAccessed(bool value) => _prefs.setBool('checkAccess', value);
+
+  static bool get isLogin {
+    String? data = _prefs.getString(userKey);
+    if (data == null) return false;
+    return true;
+  }
+
+  static UserModel? get user {
+    String? data = _prefs.getString(userKey);
+    if (data == null) return null;
+    return UserModel.fromJson(jsonDecode(data));
+  }
+
+  static set user(UserModel? user) {
+    _prefs.setString(userKey, jsonEncode(user?.toJson()));
+  }
+
+  static removeSeason() {
+    _prefs.remove(userKey);
   }
 }
+

@@ -1,7 +1,8 @@
+import 'package:admin_app/components/app_dialog.dart';
+import 'package:admin_app/pages/auth/change_password_page.dart';
 import 'package:admin_app/pages/auth/login_page.dart';
 import 'package:admin_app/pages/service/service_page.dart';
-import 'package:admin_app/services/remote/auth_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:admin_app/services/local/shared_prefs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/gen/assets.gen.dart';
@@ -20,34 +21,6 @@ class DrawerPage extends StatefulWidget {
 }
 
 class _DrawerPageState extends State<DrawerPage> {
-  final AuthService _authService =
-      AuthService(); // Tạo thể hiện của AuthService
-  String? userName; // Biến để lưu trữ tên người dùng
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserName(); // Lấy tên người dùng khi khởi tạo trang
-  }
-
-  // Hàm để lấy thông tin người dùng từ Firestore
-  Future<void> _fetchUserName() async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser; // Lấy người dùng hiện tại
-      if (user != null) {
-        DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get(); // Lấy tài liệu người dùng từ Firestore
-        setState(() {
-          userName = userDoc['name']; // Cập nhật tên người dùng
-        });
-      }
-    } catch (e) {
-      print('Lỗi khi lấy thông tin người dùng: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     const iconSize = 20.0;
@@ -63,7 +36,7 @@ class _DrawerPageState extends State<DrawerPage> {
           const Text('Welcome',
               style: TextStyle(color: AppColor.red, fontSize: 20.0)),
           Text(
-            userName ?? '-:-', // Hiển thị tên người dùng hoặc dấu nếu chưa có
+            SharedPrefs.user?.name ?? '',
             style: const TextStyle(
                 color: AppColor.brown,
                 fontSize: 16.8,
@@ -98,6 +71,24 @@ class _DrawerPageState extends State<DrawerPage> {
               ],
             ),
           ),
+          const SizedBox(height: 18.0),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ChangePasswordPage(),
+                  ));
+            },
+            behavior: HitTestBehavior.translucent,
+            child: const Row(
+              children: [
+                Icon(Icons.settings, size: iconSize, color: iconColor),
+                SizedBox(width: spacer),
+                Text('Change Passwor', style: textStyle),
+              ],
+            ),
+          ),
           Container(
             margin: const EdgeInsets.only(top: 16.0, right: 20.0),
             height: 1.2,
@@ -112,16 +103,23 @@ class _DrawerPageState extends State<DrawerPage> {
           ),
           const Spacer(flex: 2),
           InkWell(
-            onTap: () async {
-              await _authService.signOut();
-              if (mounted) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const LoginPage()), // Điều hướng đến trang đăng nhập
-                );
-              }
-            },
+            onTap: () => AppDialog.dialog(
+              context,
+              title: '😍',
+              content: 'Do you want to logout?',
+              action: () async {
+                await FirebaseAuth.instance.signOut();
+                await SharedPrefs.removeSeason();
+                if (context.mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (_) => const LoginPage(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+              },
+            ),
             highlightColor: Colors.transparent,
             splashColor: Colors.transparent,
             child: const Row(

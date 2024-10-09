@@ -1,10 +1,9 @@
-import 'package:admin_app/models/onboarding_model.dart';
-import 'package:flutter/material.dart';
 import 'package:admin_app/components/button/cr_elevated_button.dart';
-
-import 'package:admin_app/pages/auth/login_page.dart';
 import 'package:admin_app/constants/app_color.dart';
 import 'package:admin_app/services/local/shared_prefs.dart';
+import 'package:flutter/material.dart';
+import '../../models/onboarding_model.dart';
+import '../auth/login_page.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -18,14 +17,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
   int currentIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    SharedPrefs.isAccessed = true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top + 38.0,
-            bottom: 16.0,
-          ),
+              top: MediaQuery.of(context).padding.top + 38.0, bottom: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -49,10 +53,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   },
                   children: List.generate(
                     onboardings.length,
-                    (index) => Image.asset(
-                      onboardings[index].imagePath ?? '',
-                      fit: BoxFit.fitHeight,
-                    ),
+                    (index) => Image.asset(onboardings[index].imagePath ?? '',
+                        fit: BoxFit.fitHeight),
                   ),
                 ),
               ),
@@ -62,13 +64,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 child: Text(
                   onboardings[currentIndex].text ?? '',
                   style: const TextStyle(
-                    color: AppColor.black,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+                      color: AppColor.black,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 3,
                 ),
               ),
               const SizedBox(height: 30.0),
@@ -83,9 +82,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       width: index == currentIndex ? 30.0 : 10.0,
                       height: 10.0,
                       decoration: BoxDecoration(
-                        color: index == currentIndex ? Colors.red : Colors.grey,
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
+                          color:
+                              index == currentIndex ? Colors.red : Colors.grey,
+                          borderRadius: BorderRadius.circular(20.0)),
                     ),
                   ),
                 ),
@@ -100,7 +99,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         ? CrElevatedButton.outline(
                             onPressed: () {
                               currentIndex--;
-                              pageController.jumpToPage(currentIndex);
+                              pageController.animateToPage(currentIndex,
+                                  duration: const Duration(milliseconds: 600),
+                                  curve: Curves.easeInOut);
+                              // setState(() {});
                             },
                             text: 'Back',
                             padding:
@@ -114,13 +116,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             borderColor: AppColor.orange.withOpacity(0.6),
                           ),
                     CrElevatedButton(
-                      onPressed: () async {
+                      onPressed: () {
                         if (currentIndex < onboardings.length - 1) {
                           currentIndex++;
-                          pageController.jumpToPage(currentIndex);
+                          pageController.animateToPage(currentIndex,
+                              duration: const Duration(milliseconds: 600),
+                              curve: Curves.easeInOut);
+                          // setState(() {});
                         } else {
-                          final prefs = SharedPrefsOnboarding();
-                          await prefs.saveSeenOnboard(true);
                           Navigator.of(context).pushAndRemoveUntil(
                             MaterialPageRoute(
                               builder: (context) => const LoginPage(),

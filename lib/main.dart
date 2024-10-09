@@ -1,4 +1,5 @@
 import 'package:admin_app/pages/splash/splash_page.dart';
+import 'package:admin_app/services/local/shared_prefs.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,6 +21,7 @@ void main() async {
     statusBarBrightness: Brightness.light,
     statusBarIconBrightness: Brightness.dark,
   ));
+   await SharedPrefs.initialise();
   runApp(const MyApp());
 }
 

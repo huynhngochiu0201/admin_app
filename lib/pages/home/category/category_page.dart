@@ -52,155 +52,151 @@ class CategoryPageState extends State<CategoryPage> {
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: RefreshIndicator(
-                onRefresh: _refreshCategories,
-                child: FutureBuilder<List<CategoryModel>>(
-                  future: _categoriesFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(
-                          child: Text('No categories available.'));
-                    }
+            child: RefreshIndicator(
+              onRefresh: _refreshCategories,
+              child: FutureBuilder<List<CategoryModel>>(
+                future: _categoriesFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text('No categories available.'));
+                  }
 
-                    final categories = snapshot.data!;
+                  final categories = snapshot.data!;
 
-                    return ListView.separated(
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: 30.0),
-                      itemCount: categories.length,
-                      itemBuilder: (context, index) {
-                        final category = categories[index];
-                        return Container(
-                          height: 120.0,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.8),
-                                spreadRadius: 0,
-                                blurRadius: 3,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(35.0),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.all(10.0),
-                                width: 100.0,
-                                height: 126.0,
-                                decoration: BoxDecoration(
-                                  color: AppColor.white,
-                                  borderRadius: BorderRadius.circular(22.0),
-                                  image: DecorationImage(
-                                    image: NetworkImage(category.image ?? ''),
-                                    fit: BoxFit.cover,
-                                  ),
+                  return ListView.separated(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 30.0),
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      return Container(
+                        height: 120.0,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.8),
+                              spreadRadius: 0,
+                              blurRadius: 3,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(35.0),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.all(10.0),
+                              width: 100.0,
+                              height: 126.0,
+                              decoration: BoxDecoration(
+                                color: AppColor.white,
+                                borderRadius: BorderRadius.circular(22.0),
+                                image: DecorationImage(
+                                  image: NetworkImage(category.image ?? ''),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(width: 16.0),
-                              Expanded(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        category.name ?? '',
-                                        maxLines: 2,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18.0,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(width: 16.0),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      category.name ?? '',
+                                      maxLines: 2,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.0,
                                       ),
-                                    ],
-                                  ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(width: 16.0),
-                              Column(
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return _dialog(context, category);
-                                        },
-                                      );
-                                    },
-                                    icon: const Icon(Icons.edit,
-                                        color: AppColor.red),
-                                  ),
-                                  const SizedBox(height: 20.0),
-                                  IconButton(
-                                    onPressed: () async {
-                                      final shouldDelete = await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text('Confirm Delete'),
-                                            content: const Text(
-                                                'Are you sure you want to delete this category?'),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context)
-                                                        .pop(true),
-                                                child: const Text('Delete'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context)
-                                                        .pop(false),
-                                                child: const Text('Cancel'),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-
-                                      if (shouldDelete) {
-                                        try {
-                                          await CategoryService()
-                                              .deleteCategory(category.id);
-                                          _refreshCategories();
-                                        } catch (e) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                  'Error deleting category: $e'),
+                            ),
+                            const SizedBox(width: 16.0),
+                            Column(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return _dialog(context, category);
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(Icons.edit,
+                                      color: AppColor.red),
+                                ),
+                                const SizedBox(height: 20.0),
+                                IconButton(
+                                  onPressed: () async {
+                                    final shouldDelete = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Confirm Delete'),
+                                          content: const Text(
+                                              'Are you sure you want to delete this category?'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(true),
+                                              child: const Text('Delete'),
                                             ),
-                                          );
-                                        }
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              child: const Text('Cancel'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+
+                                    if (shouldDelete) {
+                                      try {
+                                        await CategoryService()
+                                            .deleteCategory(category.id);
+                                        _refreshCategories();
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                'Error deleting category: $e'),
+                                          ),
+                                        );
                                       }
-                                    },
-                                    icon: const Icon(
-                                        Icons.delete_outline_rounded,
-                                        color: AppColor.red),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+                                    }
+                                  },
+                                  icon: const Icon(Icons.delete_outline_rounded,
+                                      color: AppColor.red),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ),

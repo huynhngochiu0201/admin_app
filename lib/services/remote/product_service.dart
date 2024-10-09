@@ -179,4 +179,13 @@ class ProductService {
       throw Exception('Error deleting product: $e');
     }
   }
+
+  Future<List<String>> fetchCategories() async {
+    try {
+      final snapshot = await _firestore.collection('categories').get();
+      return snapshot.docs.map((doc) => doc['name'] as String).toList();
+    } catch (e) {
+      throw Exception('Failed to load categories: $e');
+    }
+  }
 }

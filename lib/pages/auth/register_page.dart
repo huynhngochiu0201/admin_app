@@ -1,367 +1,263 @@
-// // import 'package:flutter/gestures.dart';
-// // import 'package:flutter/material.dart';
-// // import 'package:admin_app/components/button/cr_elevated_button.dart';
-// // import 'package:admin_app/components/text_field/cr_text_field.dart';
-// // import 'package:admin_app/components/text_field/cr_text_field_password.dart';
-// // import 'package:admin_app/gen/assets.gen.dart';
-// // import 'package:admin_app/pages/auth/login_page.dart';
-// // import 'package:admin_app/constants/app_color.dart';
-// // import 'package:admin_app/utils/validator.dart';
+import 'dart:developer' as dev;
+import 'dart:async';
+import 'dart:io';
+import 'package:admin_app/components/app_bar/td_snack_bar.dart';
+import 'package:admin_app/components/app_bar/top_snack_bar.dart';
+import 'package:admin_app/components/button/cr_elevated_button.dart';
+import 'package:admin_app/components/text_field/cr_text_field.dart';
+import 'package:admin_app/components/text_field/cr_text_field_password.dart';
+import 'package:admin_app/constants/app_color.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import '../../gen/assets.gen.dart';
+import '../../models/user_model.dart';
+import '../../utils/validator.dart';
+import 'login_page.dart';
 
-// // class RegisterPage extends StatefulWidget {
-// //   const RegisterPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
-// //   @override
-// //   State<RegisterPage> createState() => _RegisterPageState();
-// // }
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
 
-// // class _RegisterPageState extends State<RegisterPage> {
-// //   TextEditingController nameController = TextEditingController();
-// //   TextEditingController emailController = TextEditingController();
-// //   TextEditingController passwordController = TextEditingController();
-// //   TextEditingController confirmPasswordController = TextEditingController();
-// //   FocusNode nameFocus = FocusNode();
-// //   bool isChecked = false;
-// //   final formKey = GlobalKey<FormState>();
-// //   bool isLoading = false;
+class _RegisterPageState extends State<RegisterPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  File? fileAvatar;
+  bool isLoading = false;
 
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold(
-// //       body: Form(
-// //         key: formKey,
-// //         child: ListView(
-// //           padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(
-// //               top: MediaQuery.of(context).padding.top + 38.0, bottom: 16.0),
-// //           children: [
-// //             const Text(
-// //               'Register',
-// //               style: TextStyle(color: AppColor.black, fontSize: 26.0),
-// //               textAlign: TextAlign.center,
-// //             ),
-// //             Center(
-// //               child: Image.asset(Assets.images.autocarlogo.path,
-// //                   width: 250.0, fit: BoxFit.cover),
-// //             ),
-// //             const SizedBox(height: 25.0),
-// //             CrTextField(
-// //               controller: nameController,
-// //               focusNode: nameFocus,
-// //               hintText: 'Full Name',
-// //               prefixIcon: const Icon(Icons.person, color: AppColor.orange),
-// //               textInputAction: TextInputAction.next,
-// //               validator: Validator.required,
-// //             ),
-// //             const SizedBox(height: 25.0),
-// //             CrTextField(
-// //               controller: emailController,
-// //               hintText: 'Email',
-// //               prefixIcon: const Icon(Icons.person, color: AppColor.orange),
-// //               textInputAction: TextInputAction.next,
-// //               validator: Validator.email,
-// //             ),
-// //             const SizedBox(height: 25.0),
-// //             CrTextFieldPassword(
-// //               controller: passwordController,
-// //               hintText: 'Password',
-// //               textInputAction: TextInputAction.next,
-// //               validator: Validator.password,
-// //             ),
-// //             const SizedBox(height: 25.0),
-// //             CrTextFieldPassword(
-// //               controller: confirmPasswordController,
-// //               onChanged: (_) => setState(() {}),
-// //               hintText: 'Confirm Password',
-// //               textInputAction: TextInputAction.done,
-// //               validator: Validator.confirmPassword(
-// //                 passwordController.text,
-// //               ),
-// //             ),
-// //             const SizedBox(height: 25.0),
-// //             Row(
-// //               crossAxisAlignment: CrossAxisAlignment.start,
-// //               children: [
-// //                 InkWell(
-// //                   onTap: () => setState(() => isChecked = !isChecked),
-// //                   highlightColor: Colors.transparent,
-// //                   splashColor: Colors.transparent,
-// //                   child: Padding(
-// //                     padding: const EdgeInsets.only(right: 6.0, bottom: 6.0),
-// //                     child: Icon(
-// //                       isChecked
-// //                           ? Icons.check_box_outlined
-// //                           : Icons.check_box_outline_blank,
-// //                       size: 20.0,
-// //                       color: Colors.red,
-// //                     ),
-// //                   ),
-// //                 ),
-// //                 Expanded(
-// //                   child: RichText(
-// //                     text: TextSpan(
-// //                       text: 'I agree to your',
-// //                       style:
-// //                           const TextStyle(color: Colors.grey, fontSize: 16.0),
-// //                       children: <TextSpan>[
-// //                         TextSpan(
-// //                           recognizer: TapGestureRecognizer()..onTap = () {},
-// //                           text: ' privacy policy',
-// //                           style: const TextStyle(
-// //                               color: Colors.red, fontSize: 16.0),
-// //                         ),
-// //                         const TextSpan(text: ' and'),
-// //                         TextSpan(
-// //                           recognizer: TapGestureRecognizer()..onTap = () {},
-// //                           text: ' term & conditions',
-// //                           style: const TextStyle(
-// //                               color: Colors.red, fontSize: 16.0),
-// //                         ),
-// //                       ],
-// //                     ),
-// //                   ),
-// //                 ),
-// //               ],
-// //             ),
-// //             const SizedBox(height: 60.0),
-// //             isLoading
-// //                 ? const Center(child: CircularProgressIndicator())
-// //                 : CrElevatedButton(text: 'Register', onPressed: () {}
-// //                     // _registerUser,
-// //                     ),
-// //             const SizedBox(height: 25.0),
-// //             RichText(
-// //               text: TextSpan(
-// //                 text: 'Do you have an account? ',
-// //                 style: const TextStyle(
-// //                   fontSize: 16.0,
-// //                   color: Colors.black,
-// //                 ),
-// //                 children: <TextSpan>[
-// //                   TextSpan(
-// //                     text: 'Sign in',
-// //                     style: const TextStyle(
-// //                       fontSize: 16.0,
-// //                       fontWeight: FontWeight.bold,
-// //                     ),
-// //                     recognizer: TapGestureRecognizer()
-// //                       ..onTap = () => Navigator.of(context).pushAndRemoveUntil(
-// //                             MaterialPageRoute(
-// //                               builder: (context) => const LoginPage(),
-// //                             ),
-// //                             (Route<dynamic> route) => false,
-// //                           ),
-// //                   ),
-// //                 ],
-// //               ),
-// //               textAlign: TextAlign.center,
-// //             ),
-// //           ],
-// //         ),
-// //       ),
-// //     );
-// //   }
-// // }
+  final _auth = FirebaseAuth.instance;
+  final _storage = FirebaseStorage.instance;
 
-// import 'package:admin_app/components/button/cr_elevated_button.dart';
-// import 'package:admin_app/components/text_field/cr_text_field.dart';
-// import 'package:admin_app/components/text_field/cr_text_field_password.dart';
-// import 'package:admin_app/constants/app_color.dart';
-// import 'package:admin_app/gen/assets.gen.dart';
-// import 'package:admin_app/pages/auth/login_page.dart';
-// import 'package:admin_app/services/remote/body/auth_services1.dart';
-// import 'package:admin_app/utils/validator.dart';
-// import 'package:flutter/gestures.dart';
-// import 'package:flutter/material.dart';
+  // tao tham chieu den collection task luu tru trong firebase
+  // de add, update, delete
+  CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users'); // tham chieu
 
-// class RegisterPage extends StatefulWidget {
-//   const RegisterPage({super.key});
+  Future<String?> uploadFile(File file) async {
+    final now = DateTime.now();
+    String path =
+        DateTime(now.year, now.month, now.day, now.hour, now.minute).toString();
 
-//   @override
-//   State<RegisterPage> createState() => _RegisterPageState();
-// }
+    final snapshot = await _storage.ref().child(path).putFile(file);
 
-// class _RegisterPageState extends State<RegisterPage> {
-//   TextEditingController nameController = TextEditingController();
-//   TextEditingController emailController = TextEditingController();
-//   TextEditingController passwordController = TextEditingController();
-//   TextEditingController confirmPasswordController = TextEditingController();
-//   FocusNode nameFocus = FocusNode();
-//   bool isChecked = false;
-//   final formKey = GlobalKey<FormState>();
-//   bool isLoading = false;
-//   final AuthService1 authMethod = AuthService1();
+    try {
+      return snapshot.ref.getDownloadURL();
+    } catch (e) {
+      return null;
+    }
+  }
 
-//   void _registerUser() async {
-//     if (formKey.currentState!.validate() && isChecked) {
-//       setState(() {
-//         isLoading = true;
-//       });
+  Future<String?> uploadAvatar() async {
+    return fileAvatar != null ? await uploadFile(fileAvatar!) : null;
+  }
 
-//       String res = await authMethod.signupUser(
-//         email: emailController.text,
-//         password: passwordController.text,
-//         name: nameController.text,
-//       );
+  Future<void> pickAvatar() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (result == null) return;
+    fileAvatar = File(result.files.single.path!);
+    setState(() {});
+  }
 
-//       setState(() {
-//         isLoading = false;
-//       });
+  Future<void> _onSubmit(BuildContext context) async {
+    if (formKey.currentState!.validate() == false) {
+      return;
+    }
 
-//       if (res == "success") {
-//         // Chuyển tới trang tiếp theo hoặc hiển thị thông báo thành công
-//         Navigator.of(context).pushReplacement(
-//           MaterialPageRoute(
-//             builder: (context) => const LoginPage(),
-//           ),
-//         );
-//       } else {
-//         // Hiển thị thông báo lỗi
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text(res)),
-//         );
-//       }
-//     } else if (!isChecked) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(
-//             content: Text("Vui lòng chấp nhận điều khoản và điều kiện")),
-//       );
-//     }
-//   }
+    setState(() => isLoading = true);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Form(
-//         key: formKey,
-//         child: ListView(
-//           padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(
-//               top: MediaQuery.of(context).padding.top + 38.0, bottom: 16.0),
-//           children: [
-//             const Text(
-//               'Register',
-//               style: TextStyle(color: AppColor.black, fontSize: 26.0),
-//               textAlign: TextAlign.center,
-//             ),
-//             Center(
-//               child: Image.asset(Assets.images.autocarlogo.path,
-//                   width: 250.0, fit: BoxFit.cover),
-//             ),
-//             const SizedBox(height: 25.0),
-//             CrTextField(
-//               controller: nameController,
-//               focusNode: nameFocus,
-//               hintText: 'Full Name',
-//               prefixIcon: const Icon(Icons.person, color: AppColor.orange),
-//               textInputAction: TextInputAction.next,
-//               validator: Validator.required,
-//             ),
-//             const SizedBox(height: 25.0),
-//             CrTextField(
-//               controller: emailController,
-//               hintText: 'Email',
-//               prefixIcon: const Icon(Icons.person, color: AppColor.orange),
-//               textInputAction: TextInputAction.next,
-//               validator: Validator.email,
-//             ),
-//             const SizedBox(height: 25.0),
-//             CrTextFieldPassword(
-//               controller: passwordController,
-//               hintText: 'Password',
-//               textInputAction: TextInputAction.next,
-//               validator: Validator.password,
-//             ),
-//             const SizedBox(height: 25.0),
-//             CrTextFieldPassword(
-//               controller: confirmPasswordController,
-//               onChanged: (_) => setState(() {}),
-//               hintText: 'Confirm Password',
-//               textInputAction: TextInputAction.done,
-//               validator: Validator.confirmPassword(
-//                 passwordController.text,
-//               ),
-//             ),
-//             const SizedBox(height: 25.0),
-//             Row(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 InkWell(
-//                   onTap: () => setState(() => isChecked = !isChecked),
-//                   highlightColor: Colors.transparent,
-//                   splashColor: Colors.transparent,
-//                   child: Padding(
-//                     padding: const EdgeInsets.only(right: 6.0, bottom: 6.0),
-//                     child: Icon(
-//                       isChecked
-//                           ? Icons.check_box_outlined
-//                           : Icons.check_box_outline_blank,
-//                       size: 20.0,
-//                       color: Colors.red,
-//                     ),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: RichText(
-//                     text: TextSpan(
-//                       text: 'I agree to your',
-//                       style:
-//                           const TextStyle(color: Colors.grey, fontSize: 16.0),
-//                       children: <TextSpan>[
-//                         TextSpan(
-//                           recognizer: TapGestureRecognizer()..onTap = () {},
-//                           text: ' privacy policy',
-//                           style: const TextStyle(
-//                               color: Colors.red, fontSize: 16.0),
-//                         ),
-//                         const TextSpan(text: ' and'),
-//                         TextSpan(
-//                           recognizer: TapGestureRecognizer()..onTap = () {},
-//                           text: ' term & conditions',
-//                           style: const TextStyle(
-//                               color: Colors.red, fontSize: 16.0),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 60.0),
-//             isLoading
-//                 ? const Center(child: CircularProgressIndicator())
-//                 : CrElevatedButton(
-//                     text: 'Register',
-//                     onPressed: _registerUser,
-//                   ),
-//             const SizedBox(height: 25.0),
-//             RichText(
-//               text: TextSpan(
-//                 text: 'Do you have an account? ',
-//                 style: const TextStyle(
-//                   fontSize: 16.0,
-//                   color: Colors.black,
-//                 ),
-//                 children: <TextSpan>[
-//                   TextSpan(
-//                     text: 'Sign in',
-//                     style: const TextStyle(
-//                       fontSize: 16.0,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                     recognizer: TapGestureRecognizer()
-//                       ..onTap = () => Navigator.of(context).pushAndRemoveUntil(
-//                             MaterialPageRoute(
-//                               builder: (context) => const LoginPage(),
-//                             ),
-//                             (Route<dynamic> route) => false,
-//                           ),
-//                   ),
-//                 ],
-//               ),
-//               textAlign: TextAlign.center,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+    _auth
+        .createUserWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text)
+        .then((value) async {
+      UserModel user = UserModel()
+        ..name = nameController.text.trim()
+        ..email = emailController.text.trim()
+        ..avatar = fileAvatar != null ? await uploadAvatar() : null;
+
+      _addUser(user);
+
+      if (!context.mounted) return;
+
+      showTopSnackBar(
+        context,
+        const TDSnackBar.success(
+            message: 'Register successfully, please login 😍'),
+      );
+
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => LoginPage(email: emailController.text.trim()),
+        ),
+        (Route<dynamic> route) => false,
+      );
+    }).catchError((onError) {
+      FirebaseAuthException a = onError as FirebaseAuthException;
+      showTopSnackBar(
+        context,
+        TDSnackBar.error(message: a.message ?? ''),
+      );
+    }).whenComplete(() {
+      setState(() => isLoading = false);
+    });
+  }
+
+  void _addUser(UserModel user) {
+    userCollection
+        .doc(user.email)
+        .set(user.toJson())
+        .then((_) {})
+        .catchError((error) {
+      dev.log("Failed to add Task: $error");
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        body: Form(
+          key: formKey,
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0).copyWith(
+                top: MediaQuery.of(context).padding.top + 38.0, bottom: 16.0),
+            children: [
+              const Center(
+                child: Text(
+                  'Register',
+                  style: TextStyle(color: AppColor.red, fontSize: 26.0),
+                ),
+              ),
+              const SizedBox(height: 30.0),
+              Center(
+                child: _buildAvatar(),
+              ),
+              const SizedBox(height: 40.0),
+              CrTextField(
+                controller: nameController,
+                hintText: 'Full Name',
+                prefixIcon: const Icon(Icons.person, color: AppColor.orange),
+                textInputAction: TextInputAction.next,
+                validator: Validator.required,
+              ),
+              const SizedBox(height: 20.0),
+              CrTextField(
+                controller: emailController,
+                hintText: 'Email',
+                prefixIcon: const Icon(Icons.email, color: AppColor.orange),
+                textInputAction: TextInputAction.next,
+                validator: Validator.email,
+              ),
+              const SizedBox(height: 20.0),
+              CrTextFieldPassword(
+                controller: passwordController,
+                hintText: 'Password',
+                textInputAction: TextInputAction.next,
+                validator: Validator.password,
+              ),
+              const SizedBox(height: 20.0),
+              CrTextFieldPassword(
+                controller: confirmPasswordController,
+                onChanged: (_) => setState(() {}),
+                hintText: 'Confirm Password',
+                onFieldSubmitted: (_) => _onSubmit(context),
+                textInputAction: TextInputAction.done,
+                validator: Validator.confirmPassword(
+                  passwordController.text,
+                ),
+              ),
+              const SizedBox(height: 56.0),
+              CrElevatedButton(
+                onPressed: () => _onSubmit(context),
+                text: 'Sign up',
+                isDisable: isLoading,
+              ),
+              const SizedBox(height: 12.0),
+              RichText(
+                text: TextSpan(
+                  text: 'Do you have an account? ',
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    color: AppColor.grey,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'Sign in',
+                      style: TextStyle(color: AppColor.red.withOpacity(0.86)),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap =
+                            () => Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginPage(),
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                ),
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  GestureDetector _buildAvatar() {
+    return GestureDetector(
+      onTap: isLoading == true ? null : pickAvatar,
+      child: Stack(
+        children: [
+          isLoading == true
+              ? CircleAvatar(
+                  radius: 34.6,
+                  backgroundColor: Colors.orange.shade200,
+                  child: const SizedBox.square(
+                    dimension: 36.0,
+                    child: CircularProgressIndicator(
+                      color: AppColor.pink,
+                      strokeWidth: 2.6,
+                    ),
+                  ),
+                )
+              : Container(
+                  margin: const EdgeInsets.all(3.6),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColor.orange),
+                  ),
+                  child: CircleAvatar(
+                    radius: 34.6,
+                    backgroundImage: fileAvatar == null
+                        // ? Assets.images.defaultAvatar.provider()
+                        // ? AssetImage(Assets.images.defaultAvatar.path)
+                        //     as ImageProvider
+                        ? Image.asset(Assets.images.autocarlogo.path).image
+                        : FileImage(
+                            File(fileAvatar?.path ?? ''),
+                          ),
+                  ),
+                ),
+          const Positioned(
+            right: 0.0,
+            bottom: 0.0,
+            child: Icon(Icons.favorite, size: 26.0, color: AppColor.red),
+          ),
+        ],
+      ),
+    );
+  }
+}
