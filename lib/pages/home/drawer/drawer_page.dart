@@ -1,6 +1,7 @@
 import 'package:admin_app/components/app_dialog.dart';
 import 'package:admin_app/pages/auth/change_password_page.dart';
 import 'package:admin_app/pages/auth/login_page.dart';
+import 'package:admin_app/pages/home/staff/staff_page.dart';
 import 'package:admin_app/pages/service/service_page.dart';
 import 'package:admin_app/services/local/shared_prefs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -83,9 +84,27 @@ class _DrawerPageState extends State<DrawerPage> {
             behavior: HitTestBehavior.translucent,
             child: const Row(
               children: [
-                Icon(Icons.settings, size: iconSize, color: iconColor),
+                Icon(Icons.password, size: iconSize, color: iconColor),
                 SizedBox(width: spacer),
                 Text('Change Passwor', style: textStyle),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18.0),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const StaffPage(),
+                  ));
+            },
+            behavior: HitTestBehavior.translucent,
+            child: const Row(
+              children: [
+                Icon(Icons.person_rounded, size: iconSize, color: iconColor),
+                SizedBox(width: spacer),
+                Text('Add Staff', style: textStyle),
               ],
             ),
           ),
