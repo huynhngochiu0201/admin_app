@@ -28,6 +28,10 @@ class _StaffPageState extends State<StaffPage> {
 
   Future<void> _onSubmit(BuildContext context) async {
     if (!formKey.currentState!.validate()) {
+      showTopSnackBar(
+        context,
+        const TDSnackBar.error(message: 'Vui lòng nhập đủ nội dung'),
+      );
       return;
     }
 

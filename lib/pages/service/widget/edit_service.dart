@@ -1,4 +1,6 @@
 import 'package:admin_app/components/button/cr_elevated_button.dart';
+import 'package:admin_app/components/snack_bar/td_snack_bar.dart';
+import 'package:admin_app/components/snack_bar/top_snack_bar.dart';
 import 'package:admin_app/components/text_field/cr_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/models/service_model.dart';
@@ -38,15 +40,17 @@ class _EditServiceDialogState extends State<EditServiceDialog> {
         _descriptionController.text,
       );
       widget.onUpdate(); // Call the update callback
+
+      showTopSnackBar(context, const TDSnackBar.success(message: ' Edit done'));
     } catch (e) {
-      print('Error updating service: $e');
+      showTopSnackBar(
+          context, TDSnackBar.error(message: 'Error updating service:$e'));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 400,
+    return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

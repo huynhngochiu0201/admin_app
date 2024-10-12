@@ -83,20 +83,6 @@ class ProductService {
     }
   }
 
-  // Future<List<ProductModel>> fetchBestSalerProducts() async {
-  //   try {
-  //     final querySnapshot = await _firestore
-  //         .collection(AppDefineCollection.APP_PRODUCT)
-  //         .orderBy('orderCount', descending: true)
-  //         .get();
-  //     return querySnapshot.docs
-  //         .map((doc) => ProductModel.fromJson(doc.data()))
-  //         .toList();
-  //   } catch (e) {
-  //     throw Exception('Error fetching best saler products: $e');
-  //   }
-  // }
-
   Future<List<ProductModel>> fetchNewProducts() async {
     try {
       final querySnapshot = await _firestore

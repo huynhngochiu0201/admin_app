@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 import 'package:admin_app/components/app_bar/custom_app_bar.dart';
 import 'package:admin_app/components/button/cr_elevated_button.dart';
+import 'package:admin_app/components/snack_bar/td_snack_bar.dart';
+import 'package:admin_app/components/snack_bar/top_snack_bar.dart';
 import 'package:admin_app/components/text_field/cr_text_field.dart';
 import 'package:admin_app/services/remote/service.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +53,10 @@ class _AddServiceState extends State<AddService> {
         priceController.text.isEmpty ||
         descriptionController.text.isEmpty) {
       // Show validation error
+      showTopSnackBar(
+        context,
+        const TDSnackBar.error(message: 'Vui lòng nhập đầy đủ thông tin'),
+      );
       return;
     }
 
@@ -70,10 +76,12 @@ class _AddServiceState extends State<AddService> {
         price: servicePrice,
         imageFile: _selectedImage,
       );
+      showTopSnackBar(
+          context, const TDSnackBar.success(message: 'add service done'));
       Navigator.of(context)
           .pop(); // Quay lại trang trước sau khi thêm thành công
     } catch (e) {
-      print('Error: $e');
+      showTopSnackBar(context, TDSnackBar.error(message: 'Error:$e'));
     } finally {
       setState(() {
         _isLoading = false;

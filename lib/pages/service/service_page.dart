@@ -10,6 +10,10 @@ import 'package:dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../../components/cr_app_dialog.dart';
+import '../../components/snack_bar/td_snack_bar.dart';
+import '../../components/snack_bar/top_snack_bar.dart';
+
 class ServicePage extends StatefulWidget {
   const ServicePage({super.key});
 
@@ -50,13 +54,21 @@ class _ServicePageState extends State<ServicePage> {
     await _fetchServices();
   }
 
-  Future<void> _deleteService(ServiceModel service) async {
+  Future<void> _deleteService(
+      BuildContext context, ServiceModel service) async {
     try {
       ServiceService serviceService = ServiceService();
       await serviceService.deleteServiceById(service.id);
       _fetchServices();
-    } catch (e) {
-      print('Error deleting service: $e');
+      showTopSnackBar(
+        context,
+        const TDSnackBar.success(message: 'Xóa dịch vụ thành công'),
+      );
+    } catch (error) {
+      showTopSnackBar(
+        context,
+        TDSnackBar.error(message: 'Xóa dịch vụ thất bại: $error'),
+      );
     }
   }
 
@@ -202,29 +214,27 @@ class _ServicePageState extends State<ServicePage> {
                                                             color: Colors.blue),
                                                       ),
                                                       IconButton(
-                                                        onPressed: () async {
-                                                          final shouldDelete =
-                                                              await showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (BuildContext
-                                                                    context) {
-                                                              return _deletel_showDialog(
-                                                                  context);
-                                                            },
-                                                          );
+                                                          onPressed: () async {
+                                                            bool confirmed =
+                                                                await CrAppDialog
+                                                                    .dialog(
+                                                              context,
+                                                              title: '😍',
+                                                              content:
+                                                                  'Bạn có muốn xóa đơn hàng này không?',
+                                                            );
 
-                                                          if (shouldDelete) {
-                                                            await _deleteService(
-                                                                service);
-                                                          }
-                                                        },
-                                                        icon: const Icon(
-                                                            Icons
-                                                                .delete_outline_rounded,
-                                                            color:
-                                                                AppColor.red),
-                                                      ),
+                                                            if (confirmed) {
+                                                              await _deleteService(
+                                                                  context,
+                                                                  service);
+                                                            }
+                                                          },
+                                                          icon: const Icon(
+                                                              Icons
+                                                                  .delete_outline_rounded,
+                                                              color: AppColor
+                                                                  .red)),
                                                     ],
                                                   ),
                                                   const SizedBox(height: 20.0),
@@ -306,23 +316,6 @@ class _ServicePageState extends State<ServicePage> {
           ),
         ),
       ),
-    );
-  }
-
-  AlertDialog _deletel_showDialog(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Confirm Delete'),
-      content: const Text('Are you sure you want to delete this category?'),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: const Text('Delete'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
-        ),
-      ],
     );
   }
 }
