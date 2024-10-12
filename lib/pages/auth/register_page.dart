@@ -1,8 +1,8 @@
 import 'dart:developer' as dev;
 import 'dart:async';
 import 'dart:io';
-import 'package:admin_app/components/app_bar/td_snack_bar.dart';
-import 'package:admin_app/components/app_bar/top_snack_bar.dart';
+import 'package:admin_app/components/snack_bar/td_snack_bar.dart';
+import 'package:admin_app/components/snack_bar/top_snack_bar.dart';
 import 'package:admin_app/components/button/cr_elevated_button.dart';
 import 'package:admin_app/components/text_field/cr_text_field.dart';
 import 'package:admin_app/components/text_field/cr_text_field_password.dart';

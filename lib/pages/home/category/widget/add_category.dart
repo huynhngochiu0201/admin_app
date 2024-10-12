@@ -1,57 +1,3 @@
-// import 'package:admin_app/components/app_bar/custom_app_bar.dart';
-// import 'package:admin_app/components/button/cr_elevated_button.dart';
-// import 'package:admin_app/components/text_field/cr_text_field.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_svg/svg.dart';
-
-// class AddCategory extends StatefulWidget {
-//   const AddCategory({super.key});
-
-//   @override
-//   State<AddCategory> createState() => _AddCategoryState();
-// }
-
-// class _AddCategoryState extends State<AddCategory> {
-//   TextEditingController nameController = TextEditingController();
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: const CustomAppBar(title: 'Add Category'),
-//       body: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 20.0),
-//         child: Column(
-//           children: [
-//             GestureDetector(
-//               onTap: () {},
-//               child: Container(
-//                 width: 150,
-//                 height: 150,
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(20),
-//                 ),
-//                 child: SvgPicture.asset(
-//                   'assets/icons/add-image-photo-icon.svg',
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 20.0),
-//             CrTextField(
-//               controller: nameController,
-//               hintText: 'Add Category',
-//             ),
-//             const Spacer(),
-//             CrElevatedButton(
-//               text: 'Submit',
-//               onPressed: () {},
-//             ),
-//             const SizedBox(height: 20.0),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:typed_data';
 import 'package:admin_app/components/app_bar/custom_app_bar.dart';
 import 'package:admin_app/components/button/cr_elevated_button.dart';
@@ -60,6 +6,9 @@ import 'package:admin_app/services/remote/category_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../../../components/snack_bar/td_snack_bar.dart';
+import '../../../../components/snack_bar/top_snack_bar.dart';
 
 class AddCategory extends StatefulWidget {
   const AddCategory({super.key});
@@ -104,16 +53,20 @@ class _AddCategoryState extends State<AddCategory> {
   Future<void> _submitCategory() async {
     final String name = nameController.text.trim();
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng nhập tên danh mục')),
+      showTopSnackBar(
+        context,
+        const TDSnackBar.error(message: 'Vui lòng nhập tên danh mục'),
       );
+
       return;
     }
 
     if (_selectedImage == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Vui lòng chọn ảnh')),
+      showTopSnackBar(
+        context,
+        const TDSnackBar.error(message: 'Vui lòng chọn ảnh'),
       );
+
       return;
     }
 
@@ -127,16 +80,15 @@ class _AddCategoryState extends State<AddCategory> {
         imageBytes: _selectedImage!,
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Thêm danh mục thành công')),
+      showTopSnackBar(
+        context,
+        const TDSnackBar.success(message: 'Thêm danh mục thành công'),
       );
 
       Navigator.of(context)
           .pop(); // Quay lại trang trước sau khi thêm thành công
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lỗi: $e')),
-      );
+      showTopSnackBar(context, TDSnackBar.error(message: ' Lỗi: $e'));
     } finally {
       setState(() {
         _isLoading = false;

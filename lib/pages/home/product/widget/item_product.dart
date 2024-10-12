@@ -4,6 +4,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/models/product_model.dart';
 
+import '../../../../components/cr_app_dialog.dart';
+import '../../../../components/snack_bar/td_snack_bar.dart';
+import '../../../../components/snack_bar/top_snack_bar.dart';
+
 class ItemProduct extends StatefulWidget {
   final ProductModel product;
   final Future<void> Function(ProductModel) onDelete;
@@ -17,46 +21,51 @@ class ItemProduct extends StatefulWidget {
 class _ItemProductState extends State<ItemProduct> {
   bool isExpanded = false;
 
-  Future<void> _deleteProduct() async {
-    bool? confirmDelete = await showDialog<bool>(
+  Future<void> _deleteProduct(BuildContext context) async {
+    bool confirmed = await CrAppDialog.dialog(
+      context,
+      title: '😍',
+      content: 'Bạn có muốn xóa sản phẩm này không?',
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await widget.onDelete(widget.product);
+      showTopSnackBar(
+        context,
+        const TDSnackBar.success(message: 'Xóa sản phẩm thành công'),
+      );
+      Navigator.pop(context, true); // Pop with a result of true
+    } catch (error) {
+      showTopSnackBar(
+        context,
+        TDSnackBar.error(message: 'Xóa sản phẩm thất bại: $error'),
+      );
+    }
+  }
+
+  Future<void> _editProduct(BuildContext context) async {
+    final result = await showDialog<bool>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          title: const Text('Confirm Deletion'),
-          content: const Text('Are you sure you want to delete this product?'),
-          actions: [
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(false), // User pressed 'No'
-              child: const Text('No'),
-            ),
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(true), // User pressed 'Yes'
-              child: const Text('Yes'),
-            ),
-          ],
+          title: const Text('Edit Product'),
+          content: EditProductDialog(
+            productId: widget.product.id,
+            initialName: widget.product.name,
+            initialPrice: widget.product.price,
+            initialDescription: widget.product.description,
+            initialCategory: widget.product.categoryId,
+            initialQuantity: widget.product.quantity,
+          ),
         );
       },
     );
 
-    if (confirmDelete == true) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const Center(child: CircularProgressIndicator());
-        },
-      );
-
-      try {
-        await widget.onDelete(widget.product); // Call the delete callback
-        Navigator.of(context).pop(); // Close the loading dialog
-        Navigator.of(context).pop(); // Navigate back after deletion
-      } catch (e) {
-        Navigator.of(context).pop(); // Close the loading dialog
-        print('Error deleting product: $e');
-      }
+    if (result == true) {
+      // Handle result if needed
+      Navigator.pop(context, true);  // Pop with a result of true
     }
   }
 
@@ -103,20 +112,18 @@ class _ItemProductState extends State<ItemProduct> {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 20.0),
               Text(
                 widget.product.name,
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${widget.product.price.toVND()} ',
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               RichText(
                 text: TextSpan(
@@ -155,23 +162,13 @@ class _ItemProductState extends State<ItemProduct> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   GestureDetector(
-                      onTap: _deleteProduct, child: const Icon(Icons.delete)),
+                    onTap: () => _deleteProduct(context),
+                    child: const Icon(Icons.delete),
+                  ),
                   GestureDetector(
-                      onTap: () async {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Edit Product'),
-                              content: EditProductDialog(
-                                productId: widget
-                                    .product.id, // Pass the productId here
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: const Icon(Icons.edit)),
+                    onTap: () => _editProduct(context),
+                    child: const Icon(Icons.edit),
+                  ),
                 ],
               ),
               const SizedBox(height: 20.0),

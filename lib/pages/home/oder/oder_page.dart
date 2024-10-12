@@ -1,9 +1,12 @@
+import 'package:admin_app/components/snack_bar/td_snack_bar.dart';
+import 'package:admin_app/components/snack_bar/top_snack_bar.dart';
 import 'package:admin_app/constants/app_color.dart';
 import 'package:admin_app/models/order_model.dart';
 import 'package:admin_app/resources/double_extension.dart';
-
 import 'package:admin_app/services/remote/order_service.dart';
 import 'package:flutter/material.dart';
+
+import '../../../components/cr_app_dialog.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key});
@@ -20,6 +23,21 @@ class OrderPageState extends State<OrderPage> {
     'Delivered',
     'Cancelled'
   ];
+
+  Future<void> _deleteOrder(BuildContext context, String orderId) async {
+    try {
+      await _orderService.deleteOrder(orderId);
+      showTopSnackBar(
+        context,
+        const TDSnackBar.success(message: 'Xóa đơn hàng thành công'),
+      );
+    } catch (error) {
+      showTopSnackBar(
+        context,
+        TDSnackBar.error(message: 'Xóa đơn hàng thất bại: $error'),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,57 +301,15 @@ class OrderPageState extends State<OrderPage> {
                               right: 10,
                               child: GestureDetector(
                                 onTap: () async {
-                                  // Show a confirmation dialog before deletion
-                                  bool? confirmDelete = await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Confirm Delete'),
-                                        content: const Text(
-                                            'Are you sure you want to delete this order?'),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text('Cancel'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(
-                                                  false); // Cancel deletion
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text('Delete'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(
-                                                  true); // Confirm deletion
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                  bool confirmed = await CrAppDialog.dialog(
+                                    context,
+                                    title: '😍',
+                                    content:
+                                        'Bạn có muốn xóa đơn hàng này không?',
                                   );
 
-                                  // If the user confirmed the deletion
-                                  if (confirmDelete == true) {
-                                    try {
-                                      // Call the service to delete the order
-                                      await _orderService
-                                          .deleteOrder(order.id ?? '');
-
-                                      // Show success message
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Order deleted successfully')),
-                                      );
-                                    } catch (error) {
-                                      // Handle any errors and show failure message
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Failed to delete order: $error')),
-                                      );
-                                    }
+                                  if (confirmed) {
+                                    await _deleteOrder(context, order.id ?? '');
                                   }
                                 },
                                 child: Icon(

@@ -58,6 +58,34 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
 
+  void _navigateToAddProduct() {
+    Navigator.of(context)
+        .push(
+      MaterialPageRoute(builder: (context) => const AddProduct()),
+    )
+        .then((_) {
+      _fetchProducts(); // After adding a new product, fetch the products again
+    });
+  }
+
+  void _navigateToItemProduct(ProductModel product) {
+    Navigator.of(context)
+        .push(
+      MaterialPageRoute(
+        builder: (context) => ItemProduct(
+          product: product,
+          onDelete: _deleteProduct,
+        ),
+      ),
+    )
+        .then((result) {
+      if (result == true) {
+        // If the result is true, it means the product was deleted or updated
+        _fetchProducts();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -72,16 +100,7 @@ class _ProductPageState extends State<ProductPage> {
           child: Column(
             children: [
               CrElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(
-                    MaterialPageRoute(builder: (context) => const AddProduct()),
-                  )
-                      .then((value) {
-                    // After adding a new product, fetch the products again
-                    _fetchProducts();
-                  });
-                },
+                onPressed: _navigateToAddProduct,
                 text: 'Add Product',
                 color: Colors.blue,
                 borderColor: Colors.white,
@@ -98,17 +117,8 @@ class _ProductPageState extends State<ProductPage> {
                                 builder: (context, index) {
                                   ProductModel product = _products[index];
                                   return GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => ItemProduct(
-                                            product: product,
-                                            onDelete:
-                                                _deleteProduct, // Pass the delete callback
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                    onTap: () =>
+                                        _navigateToItemProduct(product),
                                     child: Padding(
                                       padding: const EdgeInsets.all(5.0),
                                       child: Container(
@@ -159,9 +169,10 @@ class _ProductPageState extends State<ProductPage> {
                                                 padding: const EdgeInsets.only(
                                                     left: 10),
                                                 child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      maxLines: 1,
                                                       product.name,
                                                       style: const TextStyle(
                                                           fontSize: 16,
@@ -169,9 +180,9 @@ class _ProductPageState extends State<ProductPage> {
                                                               FontWeight.bold),
                                                       overflow:
                                                           TextOverflow.ellipsis,
+                                                      maxLines: 1,
                                                     ),
                                                     Text(
-                                                      maxLines: 1,
                                                       product.categoryId,
                                                       style: const TextStyle(
                                                           fontSize: 16,
@@ -179,6 +190,7 @@ class _ProductPageState extends State<ProductPage> {
                                                               FontWeight.bold),
                                                       overflow:
                                                           TextOverflow.ellipsis,
+                                                      maxLines: 1,
                                                     ),
                                                     Text(
                                                         'Quantity: ${product.quantity}'),
@@ -216,7 +228,6 @@ class _ProductPageState extends State<ProductPage> {
                                                   child: Align(
                                                     alignment: Alignment.center,
                                                     child: Text(
-                                                      maxLines: 1,
                                                       product.price.toVND(),
                                                       style: const TextStyle(
                                                           color: Colors.white,
@@ -224,6 +235,7 @@ class _ProductPageState extends State<ProductPage> {
                                                               FontWeight.bold),
                                                       overflow:
                                                           TextOverflow.ellipsis,
+                                                      maxLines: 1,
                                                     ),
                                                   ),
                                                 ),

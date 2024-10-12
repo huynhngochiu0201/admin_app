@@ -133,17 +133,6 @@ class ProductService {
     }
   }
 
-  // Future<void> deleteProductById(String id) async {
-  //   try {
-  //     await _firestore
-  //         .collection(AppDefineCollection.APP_PRODUCT)
-  //         .doc(id)
-  //         .delete();
-  //   } catch (e) {
-  //     throw Exception('Error deleting product: $e');
-  //   }
-  // }
-
   Future<void> deleteProductByIdCate(String idCate) async {
     try {
       final querySnapshot = await _firestore
