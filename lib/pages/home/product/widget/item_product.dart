@@ -56,7 +56,7 @@ class _ItemProductState extends State<ItemProduct> {
             initialName: widget.product.name,
             initialPrice: widget.product.price,
             initialDescription: widget.product.description,
-            initialCategory: widget.product.categoryId,
+            // initialCategory: widget.product.categoryId,
             initialQuantity: widget.product.quantity,
           ),
         );
@@ -65,7 +65,7 @@ class _ItemProductState extends State<ItemProduct> {
 
     if (result == true) {
       // Handle result if needed
-      Navigator.pop(context, true);  // Pop with a result of true
+      Navigator.pop(context, true); // Pop with a result of true
     }
   }
 
@@ -119,11 +119,13 @@ class _ItemProductState extends State<ItemProduct> {
               const SizedBox(height: 20.0),
               Text(
                 widget.product.name,
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${widget.product.price.toVND()} ',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               RichText(
                 text: TextSpan(

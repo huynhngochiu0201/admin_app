@@ -1,4 +1,5 @@
 import 'package:admin_app/models/add_product_model.dart';
+import 'package:admin_app/models/category_model.dart';
 import 'package:admin_app/models/product_model.dart';
 import 'package:admin_app/models/update_product_model.dart';
 import 'package:admin_app/services/local/define_collection.dart';
@@ -155,10 +156,10 @@ class ProductService {
     }
   }
 
-  Future<List<String>> fetchCategories() async {
+  Future<List<CategoryModel>> fetchCategories() async {
     try {
       final snapshot = await _firestore.collection('categories').get();
-      return snapshot.docs.map((doc) => doc['name'] as String).toList();
+      return snapshot.docs.map((doc) => doc['name'] as CategoryModel).toList();
     } catch (e) {
       throw Exception('Failed to load categories: $e');
     }

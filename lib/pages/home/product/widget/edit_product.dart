@@ -1,6 +1,7 @@
 import 'package:admin_app/components/snack_bar/td_snack_bar.dart';
 import 'package:admin_app/components/snack_bar/top_snack_bar.dart';
 import 'package:admin_app/models/update_product_model.dart';
+import 'package:admin_app/models/category_model.dart';
 import 'package:admin_app/services/remote/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/components/button/cr_elevated_button.dart';
@@ -33,8 +34,8 @@ class _EditProductDialogState extends State<EditProductDialog> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
-  late Future<List<String>> _categoriesFuture;
-  String? _selectedCategory;
+  late Future<List<CategoryModel>> _categoriesFuture;
+  CategoryModel? _selectedCategory;
 
   @override
   void initState() {
@@ -42,7 +43,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
     _nameController.text = widget.initialName ?? '';
     _priceController.text = widget.initialPrice?.toString() ?? '';
     _descriptionController.text = widget.initialDescription ?? '';
-    _selectedCategory = widget.initialCategory;
+    _selectedCategory = null; // Initially set to null, we'll set this later.
     _quantityController.text = widget.initialQuantity?.toString() ?? '';
     _categoriesFuture = ProductService().fetchCategories();
   }
@@ -63,7 +64,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
       productName: _nameController.text,
       price: double.tryParse(_priceController.text),
       description: _descriptionController.text,
-      cateId: _selectedCategory,
+      cateId: _selectedCategory?.id, // Use the id field of CategoryModel
       quantity: int.tryParse(_quantityController.text),
     );
 
@@ -75,8 +76,8 @@ class _EditProductDialogState extends State<EditProductDialog> {
     }
   }
 
-  Widget _buildCategoryDropdown(List<String> categories) {
-    return DropdownButtonFormField<String>(
+  Widget _buildCategoryDropdown(List<CategoryModel> categories) {
+    return DropdownButtonFormField<CategoryModel>(
       decoration: InputDecoration(
         labelText: 'Select Category',
         border: OutlineInputBorder(
@@ -91,11 +92,17 @@ class _EditProductDialogState extends State<EditProductDialog> {
         });
       },
       items: categories.map((category) {
-        return DropdownMenuItem<String>(
+        return DropdownMenuItem<CategoryModel>(
           value: category,
-          child: Text(category),
+          child: Text(category.name.toString()),
         );
       }).toList(),
+      validator: (value) {
+        if (value == null) {
+          return 'Please select a category';
+        }
+        return null;
+      },
     );
   }
 
@@ -138,7 +145,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
             ),
           ),
           const SizedBox(height: 5.0),
-          FutureBuilder<List<String>>(
+          FutureBuilder<List<CategoryModel>>(
             future: _categoriesFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
