@@ -2,6 +2,7 @@ import 'package:admin_app/components/snack_bar/td_snack_bar.dart';
 import 'package:admin_app/components/snack_bar/top_snack_bar.dart';
 import 'package:admin_app/models/update_product_model.dart';
 import 'package:admin_app/models/category_model.dart';
+import 'package:admin_app/services/remote/category_service.dart';
 import 'package:admin_app/services/remote/product_service.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/components/button/cr_elevated_button.dart';
@@ -34,8 +35,9 @@ class _EditProductDialogState extends State<EditProductDialog> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
-  late Future<List<CategoryModel>> _categoriesFuture;
-  CategoryModel? _selectedCategory;
+  final CategoryService categoryService = CategoryService();
+
+  String? _selectedCategory;
 
   @override
   void initState() {
@@ -45,7 +47,6 @@ class _EditProductDialogState extends State<EditProductDialog> {
     _descriptionController.text = widget.initialDescription ?? '';
     _selectedCategory = null; // Initially set to null, we'll set this later.
     _quantityController.text = widget.initialQuantity?.toString() ?? '';
-    _categoriesFuture = ProductService().fetchCategories();
   }
 
   Future<void> _submit() async {
@@ -64,7 +65,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
       productName: _nameController.text,
       price: double.tryParse(_priceController.text),
       description: _descriptionController.text,
-      cateId: _selectedCategory?.id, // Use the id field of CategoryModel
+      cateId: _selectedCategory, // Use the id field of CategoryModel
       quantity: int.tryParse(_quantityController.text),
     );
 
@@ -77,7 +78,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
   }
 
   Widget _buildCategoryDropdown(List<CategoryModel> categories) {
-    return DropdownButtonFormField<CategoryModel>(
+    return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: 'Select Category',
         border: OutlineInputBorder(
@@ -92,9 +93,9 @@ class _EditProductDialogState extends State<EditProductDialog> {
         });
       },
       items: categories.map((category) {
-        return DropdownMenuItem<CategoryModel>(
-          value: category,
-          child: Text(category.name.toString()),
+        return DropdownMenuItem<String>(
+          value: category.id,
+          child: Text(category.name ?? 'ngu'),
         );
       }).toList(),
       validator: (value) {
@@ -146,7 +147,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
           ),
           const SizedBox(height: 5.0),
           FutureBuilder<List<CategoryModel>>(
-            future: _categoriesFuture,
+            future: categoryService.fetchCategories(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
