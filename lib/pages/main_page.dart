@@ -1,4 +1,5 @@
 import 'package:admin_app/pages/home/oder/oder_page.dart';
+import 'package:admin_app/pages/service/service_page.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_app/components/navigator/app_bottomnavbar1.dart';
 import 'package:admin_app/components/app_bar/cr_app_bar.dart';
@@ -65,6 +66,7 @@ class _MainPageState extends State<MainPage> {
               OrderPage(),
               CategoryPage(),
               ProductPage(),
+              ServicePage(),
             ],
           ),
         ),

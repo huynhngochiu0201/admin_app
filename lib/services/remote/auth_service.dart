@@ -13,7 +13,8 @@ class AuthService {
   }) async {
     try {
       // Tạo tài khoản trên Firebase Authentication
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -27,8 +28,10 @@ class AuthService {
         ..avatar = null; // Có thể thêm avatar nếu muốn
 
       // Lưu thông tin staff vào Firestore
-      await _firestore.collection('users').doc(newStaff.id).set(newStaff.toJson());
-
+      await _firestore
+          .collection('users')
+          .doc(newStaff.id)
+          .set(newStaff.toJson());
     } catch (e) {
       throw Exception('Failed to create staff: $e');
     }

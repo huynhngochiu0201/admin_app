@@ -1,4 +1,4 @@
-package com.example.fix
+package com.hieu.admin
 
 import io.flutter.embedding.android.FlutterActivity
 

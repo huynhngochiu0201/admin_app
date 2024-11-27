@@ -50,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBpoo9HfSeXYXi1d3YnminEqdo_wOy_QQk',
-    appId: '1:166265468818:android:b9b95a366b8d027a19f34b',
-    messagingSenderId: '166265468818',
-    projectId: 'fix-firebase-178d8',
-    storageBucket: 'fix-firebase-178d8.appspot.com',
+    apiKey: 'AIzaSyBn913ZcS6YlmbKB3PRkCkhtmEVxEAaXOE',
+    appId: '1:966510429635:android:da1facc782830412046976',
+    messagingSenderId: '966510429635',
+    projectId: 'app-car-rescue',
+    storageBucket: 'app-car-rescue.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCFwvhqdPIlV0PNCWT5rk1_QBIe_j9az00',
-    appId: '1:166265468818:ios:d347d35a3dd404a919f34b',
-    messagingSenderId: '166265468818',
-    projectId: 'fix-firebase-178d8',
-    storageBucket: 'fix-firebase-178d8.appspot.com',
+    apiKey: 'AIzaSyBoM1dWkgp0TlKvvjno6EEe22PDH4FIJok',
+    appId: '1:966510429635:ios:7b83ecc11e2d88c9046976',
+    messagingSenderId: '966510429635',
+    projectId: 'app-car-rescue',
+    storageBucket: 'app-car-rescue.appspot.com',
     iosBundleId: 'com.example.adminApp',
   );
 }

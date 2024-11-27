@@ -123,9 +123,17 @@ class _ItemProductState extends State<ItemProduct> {
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               Text(
-                '${widget.product.price.toVND()} ',
+                'Quantity: ${widget.product.quantity.toString()}',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Price ${widget.product.price.toVND()}',
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
               RichText(
                 text: TextSpan(

@@ -54,9 +54,8 @@ class _EditProductDialogState extends State<EditProductDialog> {
         _priceController.text.isEmpty ||
         _quantityController.text.isEmpty ||
         _selectedCategory == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
-      );
+      showTopSnackBar(
+          context, const TDSnackBar.error(message: 'Please fill all fields'));
       return;
     }
 
@@ -95,7 +94,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
       items: categories.map((category) {
         return DropdownMenuItem<String>(
           value: category.id,
-          child: Text(category.name ?? 'ngu'),
+          child: Text(category.name ?? '-'),
         );
       }).toList(),
       validator: (value) {

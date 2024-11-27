@@ -210,7 +210,6 @@ class CategoryPageState extends State<CategoryPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Edit Category', style: TextStyle(fontSize: 20)),
             const SizedBox(height: 20),
             CrTextField(
               controller: nameController,

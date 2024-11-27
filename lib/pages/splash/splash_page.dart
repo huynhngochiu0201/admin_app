@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import '../../gen/assets.gen.dart';
 import '../auth/login_page.dart';
 import '../main_page.dart';
-import '../onboarding/onboarding_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -23,26 +22,17 @@ class _SplashPageState extends State<SplashPage> {
 
   void _checkToken() {
     Timer(const Duration(milliseconds: 2000), () {
-      if (SharedPrefs.isAccessed) {
-        if (SharedPrefs.isLogin) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => const MainPage(title: 'Hello'),
-            ),
-            (Route<dynamic> route) => false,
-          );
-        } else {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => const LoginPage(),
-            ),
-            (Route<dynamic> route) => false,
-          );
-        }
+      if (SharedPrefs.isLogin) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const MainPage(title: 'Hello'),
+          ),
+          (Route<dynamic> route) => false,
+        );
       } else {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
-            builder: (context) => const OnboardingPage(),
+            builder: (context) => const LoginPage(),
           ),
           (Route<dynamic> route) => false,
         );

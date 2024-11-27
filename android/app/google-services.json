@@ -1,21 +1,40 @@
 {
   "project_info": {
-    "project_number": "166265468818",
-    "project_id": "fix-firebase-178d8",
-    "storage_bucket": "fix-firebase-178d8.appspot.com"
+    "project_number": "966510429635",
+    "project_id": "app-car-rescue",
+    "storage_bucket": "app-car-rescue.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:166265468818:android:b9b95a366b8d027a19f34b",
+        "mobilesdk_app_id": "1:966510429635:android:da1facc782830412046976",
         "android_client_info": {
-          "package_name": "com.example.fix"
+          "package_name": "com.hieu.admin"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBpoo9HfSeXYXi1d3YnminEqdo_wOy_QQk"
+          "current_key": "AIzaSyBn913ZcS6YlmbKB3PRkCkhtmEVxEAaXOE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966510429635:android:959a130e433b2096046976",
+        "android_client_info": {
+          "package_name": "com.hieu.admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBn913ZcS6YlmbKB3PRkCkhtmEVxEAaXOE"
         }
       ],
       "services": {

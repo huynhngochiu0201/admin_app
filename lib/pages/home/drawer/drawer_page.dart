@@ -1,5 +1,4 @@
 import 'package:admin_app/components/app_dialog.dart';
-import 'package:admin_app/pages/auth/change_password_page.dart';
 import 'package:admin_app/pages/auth/login_page.dart';
 import 'package:admin_app/pages/home/staff/staff_page.dart';
 import 'package:admin_app/pages/service/service_page.dart';
@@ -73,23 +72,6 @@ class _DrawerPageState extends State<DrawerPage> {
             ),
           ),
           const SizedBox(height: 18.0),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ChangePasswordPage(),
-                  ));
-            },
-            behavior: HitTestBehavior.translucent,
-            child: const Row(
-              children: [
-                Icon(Icons.password, size: iconSize, color: iconColor),
-                SizedBox(width: spacer),
-                Text('Change Passwor', style: textStyle),
-              ],
-            ),
-          ),
           const SizedBox(height: 18.0),
           GestureDetector(
             onTap: () {

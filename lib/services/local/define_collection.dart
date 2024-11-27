@@ -7,4 +7,7 @@ class AppDefineCollection {
   static const String APP_CATEGORY = "categories";
   static const String APP_SERVICE = "services";
   static const String APP_USER_AVATAR = "user_avatar";
+  static const String APP_WHEEL_SIZE = "wheel_sizes";
+  static const String APP_PAYLOAD = "payloads";
+  static const String APP_AREA = "areas";
 }
